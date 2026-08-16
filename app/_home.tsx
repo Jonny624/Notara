@@ -933,7 +933,7 @@ export default function HomeClient() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [cardTilt, setCardTiltState] = useState<CardTiltId>("angled");
   const [cardTurn, setCardTurnState] = useState<CardTurnId>("none");
-  const [playingCardVisible, setPlayingCardVisibleState] = useState(true);
+  const [playingCardVisible, setPlayingCardVisibleState] = useState(false);
   const [shadingEnabled, setShadingEnabledState] = useState(true);
   const settingsRef = useRef<HTMLDivElement>(null);
 
@@ -947,7 +947,8 @@ export default function HomeClient() {
       if (tiltRaw && CARD_TILT_OPTIONS.some((o) => o.id === tiltRaw)) setCardTiltState(tiltRaw);
       const turnRaw = localStorage.getItem(CARD_TURN_KEY) as CardTurnId | null;
       if (turnRaw && CARD_TURN_OPTIONS.some((o) => o.id === turnRaw)) setCardTurnState(turnRaw);
-      setPlayingCardVisibleState(localStorage.getItem(PLAYING_CARD_KEY) !== "off");
+      if (!localStorage.getItem(PLAYING_CARD_KEY)) localStorage.setItem(PLAYING_CARD_KEY, "off");
+      setPlayingCardVisibleState(localStorage.getItem(PLAYING_CARD_KEY) === "on");
       setShadingEnabledState(localStorage.getItem(SHADING_KEY) !== "off");
     } catch {}
   }, []);

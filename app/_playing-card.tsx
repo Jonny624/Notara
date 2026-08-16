@@ -101,7 +101,7 @@ export default function PlayingCard() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [tiltId,     setTiltId]     = useState<CardTiltId>("angled");
   const [turnId,     setTurnId]     = useState<CardTurnId>("none");
-  const [visible,    setVisible]    = useState(true);
+  const [visible,    setVisible]    = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
 
   // Load persisted settings
@@ -111,7 +111,8 @@ export default function PlayingCard() {
       if (t && t in TILT_DEGS) setTiltId(t);
       const r = localStorage.getItem(CARD_TURN_KEY) as CardTurnId | null;
       if (r && r in TURN_DEGS) setTurnId(r);
-      setVisible(localStorage.getItem(PLAYING_CARD_KEY) !== "off");
+      if (!localStorage.getItem(PLAYING_CARD_KEY)) localStorage.setItem(PLAYING_CARD_KEY, "off");
+      setVisible(localStorage.getItem(PLAYING_CARD_KEY) === "on");
     } catch {}
   }, []);
 

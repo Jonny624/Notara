@@ -26,6 +26,7 @@ interface CardField {
 
 interface SetField {
   name: string;
+  description?: string;
   cards: CardField[];
 }
 
@@ -142,13 +143,16 @@ function DeckModal({
 
   // ── Library set helpers ──
   function addSet() {
-    setSets((prev) => [...prev, { name: `Set ${prev.length + 1}`, cards: [{ question: "", answer: "" }] }]);
+    setSets((prev) => [...prev, { name: `Set ${prev.length + 1}`, description: "", cards: [{ question: "", answer: "" }] }]);
   }
   function removeSet(si: number) {
     setSets((prev) => prev.filter((_, idx) => idx !== si));
   }
   function updateSetName(si: number, name: string) {
     setSets((prev) => prev.map((s, idx) => (idx === si ? { ...s, name } : s)));
+  }
+  function updateSetDescription(si: number, description: string) {
+    setSets((prev) => prev.map((s, idx) => (idx === si ? { ...s, description } : s)));
   }
   function addCardToSet(si: number) {
     setSets((prev) =>
@@ -476,6 +480,14 @@ function DeckModal({
                       value={set.name}
                       onChange={(e) => updateSetName(si, e.target.value)}
                       className={inputCls}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Set description (optional)"
+                      value={set.description ?? ""}
+                      onChange={(e) => updateSetDescription(si, e.target.value)}
+                      className={inputCls}
+                      style={{ opacity: 0.75 }}
                     />
                     <div className="flex flex-col gap-2 mt-1">
                       {set.cards.map((card, ci) => (
@@ -1327,7 +1339,7 @@ export default function Dashboard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [cardTilt, setCardTiltState] = useState<CardTiltId>("angled");
   const [cardTurn, setCardTurnState] = useState<CardTurnId>("none");
-  const [playingCardVisible, setPlayingCardVisibleState] = useState(true);
+  const [playingCardVisible, setPlayingCardVisibleState] = useState(false);
   const [shadingEnabled, setShadingEnabledState] = useState(true);
   const [stackDepth, setStackDepthState] = useState<0 | 1 | 2>(2);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -1342,7 +1354,8 @@ export default function Dashboard() {
       if (tiltRaw && CARD_TILT_OPTIONS.some((o) => o.id === tiltRaw)) setCardTiltState(tiltRaw);
       const turnRaw = localStorage.getItem(CARD_TURN_KEY) as CardTurnId | null;
       if (turnRaw && CARD_TURN_OPTIONS.some((o) => o.id === turnRaw)) setCardTurnState(turnRaw);
-      setPlayingCardVisibleState(localStorage.getItem(PLAYING_CARD_KEY) !== "off");
+      if (!localStorage.getItem(PLAYING_CARD_KEY)) localStorage.setItem(PLAYING_CARD_KEY, "off");
+      setPlayingCardVisibleState(localStorage.getItem(PLAYING_CARD_KEY) === "on");
       setShadingEnabledState(localStorage.getItem(SHADING_KEY) !== "off");
       const depthRaw = parseInt(localStorage.getItem(STACK_DEPTH_KEY) ?? "2");
       if ([0, 1, 2].includes(depthRaw)) setStackDepthState(depthRaw as 0 | 1 | 2);
