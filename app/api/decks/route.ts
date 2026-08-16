@@ -89,20 +89,21 @@ export async function POST(req: NextRequest) {
           );
         }
         for (const card of set.cards) {
-          if (!card.question?.trim() || !card.answer?.trim()) {
+          if (!card.question?.trim()) {
             return Response.json(
-              { error: "Each card must have a question and an answer." },
+              { error: "Each card must have a question." },
               { status: 400 },
             );
           }
         }
       }
 
-      const cleanSets = sets.map((s: { name: string; cards: { question: string; answer: string }[] }) => ({
+      const cleanSets = sets.map((s: { name: string; description?: string; cards: { question: string; answer: string }[] }) => ({
         name: s.name.trim(),
+        ...(s.description?.trim() ? { description: s.description.trim() } : {}),
         cards: s.cards.map((c) => ({ question: c.question.trim(), answer: c.answer.trim() })),
       }));
-      const flatCards = cleanSets.flatMap((s: { name: string; cards: { question: string; answer: string }[] }) => s.cards);
+      const flatCards = cleanSets.flatMap((s: { name: string; description?: string; cards: { question: string; answer: string }[] }) => s.cards);
 
       const result = await db.collection("decks").insertOne({
         title: title.trim(),
@@ -129,9 +130,9 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "At least one card is required." }, { status: 400 });
     }
     for (const card of cards) {
-      if (!card.question?.trim() || !card.answer?.trim()) {
+      if (!card.question?.trim()) {
         return Response.json(
-          { error: "Each card must have a question and an answer." },
+          { error: "Each card must have a question." },
           { status: 400 },
         );
       }

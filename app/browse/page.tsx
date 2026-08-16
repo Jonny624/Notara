@@ -17,7 +17,7 @@ interface DeckSummary {
 }
 
 interface CardField { question: string; answer: string; }
-interface SetField  { name: string; cards: CardField[]; }
+interface SetField  { name: string; description?: string; cards: CardField[]; }
 
 // Module-level cache so deck list survives tab switches without re-flashing skeletons
 let cachedPublicDecks: DeckSummary[] | null = null;
@@ -288,6 +288,9 @@ function LibraryModal({ deck, onClose, onStudy }: LibraryModalProps) {
                     >
                       <div className="flex flex-col gap-0.5 min-w-0">
                         <span className="text-sm font-semibold text-mist/90 truncate">{set.name}</span>
+                        {set.description && (
+                          <span className="text-[10px] text-white/45 leading-snug truncate">{set.description}</span>
+                        )}
                         <span className="text-[10px] text-white/30">
                           {set.cards.length} {set.cards.length === 1 ? "card" : "cards"}
                         </span>
