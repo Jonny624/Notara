@@ -487,7 +487,7 @@ function CardStack({ soundEnabled }: { soundEnabled: boolean }) {
                       <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-slate mb-5">
                         Question
                       </span>
-                      <p className="text-sm font-medium text-mist/80 leading-relaxed">
+                      <p className="text-sm font-medium text-mist/80 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
                         {card.question}
                       </p>
                       <span className="mt-6 text-[9px] text-slate/60 animate-hint-pulse">
@@ -520,7 +520,7 @@ function CardStack({ soundEnabled }: { soundEnabled: boolean }) {
                     <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-slate mb-5">
                       Answer
                     </span>
-                    <p className="text-2xl font-semibold text-mist">{card.answer}</p>
+                    <p className="text-sm font-medium text-mist/50 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>{card.answer}</p>
                   </div>
                 )}
               </div>
