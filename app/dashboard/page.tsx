@@ -122,13 +122,36 @@ function DeckModal({
   const overlayRef = useRef<HTMLDivElement>(null);
   const bulkFileRef = useRef<HTMLInputElement>(null);
 
+  const initialTitle = existing?.title ?? "";
+  const initialDescription = existing?.description ?? "";
+  const initialCards = existing && !existing.sets ? existing.cards : [{ question: "", answer: "" }];
+  const initialSets = existing?.sets ?? [{ name: "Set 1", cards: [{ question: "", answer: "" }] }];
+  const initialVisibility = existing?.visibility ?? "public";
+  const initialHidden = existing?.hidden ?? false;
+
+  function isDirty() {
+    if (title !== initialTitle) return true;
+    if (description !== initialDescription) return true;
+    if (visibility !== initialVisibility) return true;
+    if (hidden !== initialHidden) return true;
+    if (JSON.stringify(cards) !== JSON.stringify(initialCards)) return true;
+    if (JSON.stringify(sets) !== JSON.stringify(initialSets)) return true;
+    return false;
+  }
+
+  function confirmClose() {
+    if (isDirty() && !window.confirm("You have unsaved changes. Discard and close?")) return;
+    onClose();
+  }
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") confirmClose();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onClose, title, description, visibility, hidden, cards, sets]);
 
   // ── Flashcard card helpers ──
   function addCard() {
@@ -298,7 +321,7 @@ function DeckModal({
       ref={overlayRef}
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto py-8"
       style={{ background: "rgba(20,30,60,0.72)", backdropFilter: "blur(6px)" }}
-      onClick={(e) => e.target === overlayRef.current && onClose()}
+      onClick={(e) => e.target === overlayRef.current && confirmClose()}
     >
       <div
         className="relative w-full max-w-lg rounded-3xl border border-white/10 bg-surface card-inset stripe-bg shadow-2xl px-8 py-8 flex flex-col gap-6 mx-4"
@@ -306,7 +329,7 @@ function DeckModal({
       >
         {/* Close */}
         <button
-          onClick={onClose}
+          onClick={confirmClose}
           className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full border border-white/10 text-slate/60 hover:text-mist transition-colors"
           style={{ background: "rgba(255,255,255,0.04)" }}
         >
