@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
+const ADMIN_EMAIL = "jonnyparent6@gmail.com";
 
 // ── Placeholder data ──────────────────────────────────────────────────────────
 
@@ -33,6 +35,22 @@ type Tab = "overview" | "users" | "decks" | "settings";
 export default function AdminPage() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("overview");
+  const [allowed, setAllowed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user?.email === ADMIN_EMAIL) {
+          setAllowed(true);
+        } else {
+          router.replace("/");
+        }
+      })
+      .catch(() => router.replace("/"));
+  }, [router]);
+
+  if (allowed === null) return null;
 
   return (
     <div className="min-h-screen" style={{ background: "var(--color-cream)" }}>

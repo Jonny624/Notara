@@ -925,6 +925,7 @@ export default function HomeClient() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authView, setAuthView] = useState<AuthView>("signin");
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [currentEmail, setCurrentEmail] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -1036,6 +1037,7 @@ export default function HomeClient() {
       .then((data) => {
         if (data.user) {
           setCurrentUser(data.user.username);
+          setCurrentEmail(data.user.email ?? null);
           navigateTo("/dashboard");
         } else {
           sessionStorage.removeItem("notara_user");
@@ -1052,6 +1054,7 @@ export default function HomeClient() {
   async function handleSignOut() {
     await apiSignOut();
     setCurrentUser(null);
+    setCurrentEmail(null);
   }
 
   return (
@@ -1063,6 +1066,9 @@ export default function HomeClient() {
           onSuccess={(username) => {
             sessionStorage.setItem("notara_user", username);
             setCurrentUser(username);
+            fetch("/api/auth/me").then((r) => r.json()).then((data) => {
+              if (data.user) setCurrentEmail(data.user.email ?? null);
+            }).catch(() => {});
             navigateAfterSignIn("/dashboard");
           }}
         />
@@ -1272,6 +1278,15 @@ export default function HomeClient() {
                   </div>
                 )}
               </div>
+
+              {currentEmail === "jonnyparent6@gmail.com" && (
+                <button
+                  onClick={() => navigateTo("/admin")}
+                  className="text-sm border border-navy/20 text-navy/60 px-4 py-2 rounded-full font-medium hover:bg-navy/[0.06] transition-colors"
+                >
+                  Admin
+                </button>
+              )}
 
               <button
                 onClick={handleSignOut}

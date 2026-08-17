@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
   if (!token) return Response.json({ user: null });
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { username: string };
-    return Response.json({ user: { username: payload.username } });
+    const payload = jwt.verify(token, JWT_SECRET) as { username: string; email?: string | null };
+    return Response.json({ user: { username: payload.username, email: payload.email ?? null } });
   } catch {
     return Response.json({ user: null });
   }
