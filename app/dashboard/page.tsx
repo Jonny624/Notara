@@ -1346,6 +1346,7 @@ function getCustomIndices(): number[] {
 export default function Dashboard() {
   const router = useRouter();
   const [username, setUsername] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
 
   const [decks, setDecks] = useState<DeckSummary[]>([]);
@@ -1462,6 +1463,7 @@ export default function Dashboard() {
         if (data.user) {
           sessionStorage.setItem("notara_user", data.user.username);
           setUsername(data.user.username);
+          setEmail(data.user.email ?? null);
         } else {
           sessionStorage.removeItem("notara_user");
           navigateTo("/");
@@ -1800,6 +1802,14 @@ export default function Dashboard() {
               )}
             </div>
 
+            {email === "jonnyparent6@gmail.com" && (
+              <button
+                onClick={() => navigateTo("/admin")}
+                className="text-sm border border-navy/20 text-navy/60 px-4 py-2 rounded-full font-medium hover:bg-navy/[0.06] transition-colors"
+              >
+                Admin
+              </button>
+            )}
             <button
               onClick={handleSignOut}
               className="text-sm border border-navy/20 text-navy/60 px-4 py-2 rounded-full font-medium hover:bg-navy/[0.06] transition-colors"

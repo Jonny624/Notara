@@ -615,7 +615,7 @@ function StudyCardStack({ cards: initialCards, shuffle = true }: { cards: Card[]
                       <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate mb-6">
                         Question
                       </span>
-                      <p className="text-lg font-medium text-mist/90 leading-relaxed">
+                      <p className="text-lg font-medium text-mist/90 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
                         {card?.question}
                       </p>
                       <span className="mt-8 text-xs text-slate/60 animate-hint-pulse">
@@ -659,7 +659,7 @@ function StudyCardStack({ cards: initialCards, shuffle = true }: { cards: Card[]
                     <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate mb-6">
                       Answer
                     </span>
-                    <p className="text-4xl font-semibold text-mist">{card.answer}</p>
+                    <p className="text-4xl font-semibold text-mist" style={{ fontFamily: "Georgia, serif" }}>{card.answer}</p>
                   </div>
                 )}
               </div>
